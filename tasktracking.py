@@ -1,6 +1,6 @@
 import pprint
 from pymongo import MongoClient
-client = MongoClient("mongodb+srv://priyanka:HelloWorld@practice.lgxcjgh.mongodb.net/")
+client = MongoClient("mongodb+srv://priyanka:******@practice.lgxcjgh.mongodb.net/")
 db = client["migration_system"]
 
 tasklist = db["tasks"] # each task is an induvidual document
