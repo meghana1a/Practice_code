@@ -30,6 +30,7 @@ def add_task (task, user_id):
         "completed" : False,
     }
     db.tasks.insert_one(insert)
+    db.users.find_one_and_update({"user_id": user_id}, {"$inc":{"incomplete_tasks" : 1}})
 
 # adds users to user collection (only called within get_input_user)
 def add_user (username, user_id):
@@ -93,14 +94,11 @@ def get_id():
     user_id = input("Please enter your user id: ")
     return user_id
 
-
-
-# Possible additions: Log in function, verify that user_id is unique
-
-def menu():
-    a = input("would you like to create an account enter yes or no: ")
+#account creation function
+def account_creation():
+    a = input("would you like to A: log in or B: Create an account. Please enter the corresponding letter:  ")
     
-    if a == "yes":
+    if a == "B":
             get_input_user()
             
             
@@ -108,9 +106,18 @@ def menu():
     else:
             display_profile(get_id())
             
+
+
+
+
+# Possible additions: Log in function, verify that user_id is unique
+
+def menu():
+    global user_id
+    
             
     while True:
-        a = input("What would you like to do A: add a task, B: update the status of a task, C: View your tasks, D: View your profile, or E: Exit program . Please enter the corresponding letter of what you'd like to do:  ")
+        a = input("What would you like to do A: add a task, B: update the status of a task, C: View your tasks, D: View your profile, E: Exit program, F: Create a new account or log in G: log out. Please enter the corresponding letter of what you'd like to do:  ")
         if a == "A":
             get_input_task(user_id)
         elif a == "B":
@@ -121,6 +128,12 @@ def menu():
             display_profile(user_id)
         elif a == "E":
             break
+        elif a == "F":
+            account_creation()
+        elif a == "G":
+            
+            user_id = 0
+            print("")
 
 
 
