@@ -8,13 +8,11 @@ users = db["users"] # each user is an induvidual document
 user_id = ""
 # function to add tasks to the tasks collection 
 def get_input_task (user_id):
-    #global user_id
     task = input("Please enter a task: ")
     add_task(task, user_id)
 
 # add's a user to the user collection 
 def get_input_user ():
-    
     username = input("Please enter user name: ")
     get_id()
     add_user(username, user_id)
@@ -47,7 +45,6 @@ def add_user (username, user_id):
 
 #function that goes through task list and retrives all the tasks for a specific user 
 def find_user_tasks (user_id):
-    #user_id = input("Please enter your user id: ")
     finduser = db.tasks.find({"user_id" : user_id })
     for i in finduser:
         print(i)
@@ -55,8 +52,6 @@ def find_user_tasks (user_id):
 
 #function to mark a task complete or incomplete 
 def update_task_status(user_id):
-   # user_id = input("Please enter your user id: ")
-    #find way to do this without entering user id twice
     find_user_tasks(user_id)
     task = input("What is the name of the task you'd like to update: ")
     if (input("Would you like to A: Mark as completed or B: Mark as in_progress. Please type the corresponding letter: ") == "A"):
@@ -89,8 +84,6 @@ def count_compleation(user_id):
 
 # function to display user profile 
 def display_profile(user_id):
-    #global user_id
-    #user_id = input("Please enter your user id: ")
     profile = db.users.find({"user_id":user_id})
     for i in profile:
         pprint.pprint(i)
@@ -103,15 +96,14 @@ def get_id():
     user_id = input("Please enter your user id: ")
     return user_id
 
+
 #improvement: account creation function
 def account_creation():
     a = input("would you like to A: log in or B: Create an account. Please enter the corresponding letter:  ")
     
     if a == "B":
             get_input_user()
-            
-            
-            
+                   
     else:
             display_profile(get_id())
 
@@ -121,12 +113,10 @@ def deactivate (user_id):
     db.users.find_one_and_delete({"user_id":user_id})
 
 
-
 # deletes the loged in users completed tasks
 def delete_completed_tasks(user_id):
     db.tasks.delete_many({"user_id":user_id, "completed":True})
     print("Done")
-
 
 
 # gets all users in database
@@ -137,7 +127,7 @@ def get_users():
 
 
 
-# Possible additions: Log in function, verify that user_id is unique
+# Possible additions: Log in function (done), verify that user_id is unique
 
 
 
@@ -146,7 +136,7 @@ def menu():
     
             
     while True:
-        a = input("What would you like to do A: add a task, B: update the status of a task, C: View your tasks, D: View your profile, E: Exit program, F: Create a new account or log in, G: log out, H: See in progress tasks, I: Deactivate Account, J: Delete Completed Tasks, K: See all users. Please enter the corresponding letter of what you'd like to do:  ")
+        a = input("What would you like to do: \n A: add a task,\n B: update the status of a task,\n C: View your tasks,\n D: View your profile,\n E: Exit program,\n F: Create a new account or log in,\n G: log out,\n H: See in progress tasks,\n I: Deactivate Account,\n J: Delete Completed Tasks,\n K: See all users. \n Please enter the corresponding letter of what you'd like to do:  ")
         if a == "A":
             get_input_task(user_id)
         elif a == "B":
