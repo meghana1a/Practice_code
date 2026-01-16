@@ -1,6 +1,6 @@
 import pprint
 from pymongo import MongoClient
-client = MongoClient("mongodb://localhost:127.0.0.1:27017")
+client = MongoClient("mongodb+srv://priyanka:HelloWorld@practice.lgxcjgh.mongodb.net/")
 db = client["migration_system"]
 
 tasklist = db["tasks"] # each task is an induvidual document
@@ -28,6 +28,7 @@ def add_task (task, user_id):
         "task" : task,
         "user_id" : user_id,
         "completed" : False,
+        "in progress": False,
     }
     db.tasks.insert_one(insert)
     db.users.find_one_and_update({"user_id": user_id}, {"$inc":{"incomplete_tasks" : 1}})
@@ -39,6 +40,7 @@ def add_user (username, user_id):
         "user_id" : user_id,
         "completed_tasks" : 0,
         "incomplete_tasks" : 0,
+        
     }
     db.users.insert_one(insert)
     
@@ -55,12 +57,19 @@ def find_user_tasks (user_id):
 def update_task_status(user_id):
    # user_id = input("Please enter your user id: ")
     #find way to do this without entering user id twice
-    find_user_tasks()
-    task = input("What is the name of the task you'd like to update to show compleation: ")
-    db.tasks.find_one_and_update({"user_id" : user_id , "task":task}, {"$set":{"completed" : True}})
-    count_compleation(user_id)
+    find_user_tasks(user_id)
+    task = input("What is the name of the task you'd like to update: ")
+    if (input("Would you like to A: Mark as completed or B: Mark as in_progress. Please type the corresponding letter: ") == "A"):
+     db.tasks.find_one_and_update({"user_id" : user_id , "task":task}, {"$set":{"completed" : True}})
+     count_compleation(user_id)
+    else:
+        db.tasks.find_one_and_update({"user_id" : user_id , "task":task}, {"$set":{"in progress" : True}})
 
-# function that counts complete and incomplete tasks
+def get_in_progress(user_id):
+    finduser = db.tasks.find({"user_id" : user_id ,"in progress" : True})
+    for i in finduser:
+        print(i)
+    
 
 #has error must fix
 def count_compleation(user_id):
@@ -106,7 +115,18 @@ def account_creation():
     else:
             display_profile(get_id())
             
+def deactivate (user_id):
+    db.tasks.delete_many({"user_id":user_id})
+    db.users.find_one_and_delete({"user_id":user_id})
 
+def delete_completed_tasks(user_id):
+    db.tasks.delete_many({"user_id":user_id, "completed":True})
+    print("Done")
+
+def get_users():
+    findusers = db.users.find({})
+    for i in findusers:
+        pprint.pprint(i)
 
 
 
@@ -117,7 +137,7 @@ def menu():
     
             
     while True:
-        a = input("What would you like to do A: add a task, B: update the status of a task, C: View your tasks, D: View your profile, E: Exit program, F: Create a new account or log in G: log out. Please enter the corresponding letter of what you'd like to do:  ")
+        a = input("What would you like to do A: add a task, B: update the status of a task, C: View your tasks, D: View your profile, E: Exit program, F: Create a new account or log in, G: log out, H: See in progress tasks, I: Deactivate Account, J: Delete Completed Tasks, K: See all users. Please enter the corresponding letter of what you'd like to do:  ")
         if a == "A":
             get_input_task(user_id)
         elif a == "B":
@@ -131,9 +151,20 @@ def menu():
         elif a == "F":
             account_creation()
         elif a == "G":
-            
             user_id = 0
             print("")
+        elif a == "H":
+            get_in_progress(user_id)
+        elif a == "I":
+            deactivate(user_id)
+        elif a == "J":
+            delete_completed_tasks(user_id)
+        elif a == "K":
+            get_users()
+
+
+        
+        
 
 
 
