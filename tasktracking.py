@@ -7,7 +7,7 @@ tasklist = db["tasks"] # each task is an induvidual document
 users = db["users"] # each user is an induvidual document
 user_id = ""
 # function to add tasks to the tasks collection 
-def get_input_task (user_id):
+def get_input_task (user_id):   
     task = input("Please enter a task: ")
     add_task(task, user_id)
 
