@@ -96,14 +96,14 @@ def display_profile(user_id):
         pprint.pprint(i)
    
 
-# improvements 
-#get user id function 
+
+#improvment: get user id function 
 def get_id():
     global user_id
     user_id = input("Please enter your user id: ")
     return user_id
 
-#account creation function
+#improvement: account creation function
 def account_creation():
     a = input("would you like to A: log in or B: Create an account. Please enter the corresponding letter:  ")
     
@@ -114,15 +114,22 @@ def account_creation():
             
     else:
             display_profile(get_id())
-            
+
+# removes the loged in users account from the database           
 def deactivate (user_id):
     db.tasks.delete_many({"user_id":user_id})
     db.users.find_one_and_delete({"user_id":user_id})
 
+
+
+# deletes the loged in users completed tasks
 def delete_completed_tasks(user_id):
     db.tasks.delete_many({"user_id":user_id, "completed":True})
     print("Done")
 
+
+
+# gets all users in database
 def get_users():
     findusers = db.users.find({})
     for i in findusers:
@@ -131,6 +138,8 @@ def get_users():
 
 
 # Possible additions: Log in function, verify that user_id is unique
+
+
 
 def menu():
     global user_id
