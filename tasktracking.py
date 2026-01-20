@@ -1,6 +1,7 @@
 import pprint
+import os
 from pymongo import MongoClient
-client = MongoClient("mongodb+srv://priyanka:HelloWorld@practice.lgxcjgh.mongodb.net/")
+client = MongoClient(os.enviorment.mongo_uri)
 db = client["migration_system"]
 
 tasklist = db["tasks"] # each task is an induvidual document
@@ -26,7 +27,7 @@ def add_task (task, user_id):
         "task" : task,
         "user_id" : user_id,
         "completed" : False,
-        "in progress": False,
+        "in_progress": False,
     }
     db.tasks.insert_one(insert)
     db.users.find_one_and_update({"user_id": user_id}, {"$inc":{"incomplete_tasks" : 1}})
@@ -59,6 +60,7 @@ def update_task_status(user_id):
      count_compleation(user_id)
     else:
         db.tasks.find_one_and_update({"user_id" : user_id , "task":task}, {"$set":{"in progress" : True}})
+    count_compleation(get_user_id)
 
 def get_in_progress(user_id):
     finduser = db.tasks.find({"user_id" : user_id ,"in progress" : True})
@@ -66,16 +68,10 @@ def get_in_progress(user_id):
         print(i)
     
 
-#has error must fix
+
 def count_compleation(user_id):
-    count = 0
-    total = 0
-    finduser = db.tasks.find({"user_id" : user_id, "completed" : True })
-    for i in finduser:
-        count = count + 1 
-    findusertotal = db.tasks.find({"user_id" : user_id })
-    for k in findusertotal:
-        total = total + 1
+    count = db.tasks.count_documents({"user_id":user_id, "completed":True})
+    total = db.tasks.count_documents({"user_id":user_id})
     incomplete = total - count
     db.users.find_one_and_update({"user_id": user_id},{"$set": {"completed_tasks" : count}})
     db.users.find_one_and_update({"user_id": user_id},{ "$set":{ "incomplete_tasks" : incomplete}})
@@ -126,38 +122,39 @@ def get_users():
         pprint.pprint(i)
 
 
+def get_user_id():
+    return user_id
 
 # Possible additions: Log in function (done), verify that user_id is unique
 
 
 
 def menu():
-    global user_id
     
             
     while True:
         a = input("What would you like to do: \n A: add a task,\n B: update the status of a task,\n C: View your tasks,\n D: View your profile,\n E: Exit program,\n F: Create a new account or log in,\n G: log out,\n H: See in progress tasks,\n I: Deactivate Account,\n J: Delete Completed Tasks,\n K: See all users. \n Please enter the corresponding letter of what you'd like to do:  ")
         if a == "A":
-            get_input_task(user_id)
+            get_input_task(get_user_id)
         elif a == "B":
-            update_task_status(user_id)
+            update_task_status(get_user_id)
         elif a == "C":
-            find_user_tasks(user_id)
+            find_user_tasks(get_user_id)
         elif a == "D":
-            display_profile(user_id)
+            display_profile(get_user_id)
         elif a == "E":
             break
         elif a == "F":
             account_creation()
         elif a == "G":
-            user_id = 0
+            user_id = ""
             print("")
         elif a == "H":
-            get_in_progress(user_id)
+            get_in_progress(get_user_id)
         elif a == "I":
-            deactivate(user_id)
+            deactivate(get_user_id)
         elif a == "J":
-            delete_completed_tasks(user_id)
+            delete_completed_tasks(get_user_id)
         elif a == "K":
             get_users()
 
@@ -168,3 +165,4 @@ def menu():
 
 
 menu()
+print("")
