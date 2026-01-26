@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI
 from pymongo import MongoClient
-client = MongoClient("mongodb+srv://priyanka:HelloWorld@practice.lgxcjgh.mongodb.net/")
+client = MongoClient("os.enviorment.mongo_uri")
 db = client["task_system"]
 
 tasks = db["tasks"]
