@@ -1,6 +1,6 @@
-import os
 from fastapi import FastAPI
 from pymongo import MongoClient
+import os
 client = MongoClient("os.enviorment.mongo_uri")
 db = client["task_system"]
 
@@ -91,21 +91,22 @@ def delete_tasks(user_id:str):
 
 @app.get("/display_users/")
 def display_users():
-    a = []
-    findusers = list(db.users.find({},{"_id":0}))
+    profiles = []
+    findusers = db.users.find({},{"_id":0})
     for i in findusers:
-        a.append(i)
-    return {"users": findusers}
+        profiles.append(i)
+    return {"Users": profiles}
+   
 
 
 #display profile
 @app.get("/display_profile/")
 def display_profile(user_id:str):
-    a = []
-    finduser = list(db.users.find({"user_id":user_id}, {"_id":0}))
+    profile = []
+    finduser = db.users.find({"user_id":user_id},{"_id":0})
     for i in finduser:
-        a.append(i)
-    return {"profile" : finduser}
+        profile.append(i)
+    return {"Profile": profile}
 
 #delete user
 @app.delete("/deactivate/")
